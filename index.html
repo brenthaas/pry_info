@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+
+
+      body {
+        font-family: 'Droid Serif';
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h2 { font-size: 2em; }
+      .remark-slide-content h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(249, 38, 114);
+        text-decoration: none;
+      }
+      code {
+        background: #e7e8e2;
+        border-radius: 5px;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code-line-highlighted     { background-color: #373832; }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        padding-top: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle, center
+
+## Pry, Oh My!
+
+---
+
+.left-column[
+## Overview
+]
+
+.right-column[
+1. Ways to use Pry
+2. Debugging
+3. Inspecting code
+4. Digging into Rails
+5. Customization and help
+]
+
+---
+
+class: middle, center
+
+## Pry is a REPL
+
+---
+
+.left-column[
+## R ead
+]
+.right-column[
+**R**ead a line of code (i.e. "expression")
+]
+---
+.left-column[
+## R ead
+## E valuate
+]
+.right-column[
+**R**ead a line of code (i.e. "expression")
+]
+.right-column[
+**E**valuate the expression
+]
+---
+.left-column[
+## R ead
+## E valuate
+## P rint
+]
+.right-column[
+**R**ead a line of code (i.e. "expression")
+]
+.right-column[
+**E**valuate the expression
+]
+.right-column[
+**P**rint the output
+]
+---
+.left-column[
+## R ead
+## E valuate
+## P rint
+## L oop
+]
+.right-column[
+**R**ead a line of code (i.e. "expression")
+]
+.right-column[
+**E**valuate the expression
+]
+.right-column[
+**P**rint the output
+]
+.right-column[
+**L**oop / Do it again!
+]
+--
+.right-column[
+```Ruby
+[1] pry(main)> 2 + 2
+=> 4
+```
+]
+
+---
+
+class: middle, center
+
+# It's all about context.
+
+---
+
+.left-column[
+## Context
+### - main
+]
+.right-column[
+What you get from a basic Pry session
+
+```Ruby
+def main
+  <--- You Are Here --->
+end
+```
+
+```Ruby
+[1] pry(main)>
+```
+]
+
+---
+
+.left-column[
+## Context
+### - main
+### - An Object
+]
+.right-column[
+Have your context be an object
+
+```Ruby
+[1] pry(main)> "foo".pry
+[1] pry("foo")> self.upcase
+=> "FOO"
+[2] pry("foo")> exit
+=> nil
+[2] pry(main)>
+```
+<small>(note the nested Pry session)</small>
+]
+
+---
+
+.left-column[
+## Context
+### - main
+### - An Object
+### - Binding
+]
+.right-column[
+[Binding](https://ruby-doc.org/core-2.5.1/Binding.html):
+> *Objects of class Binding encapsulate the execution context*
+> *at some particular place in the code and retain this context*
+> *for future use.*
+]
+--
+.right-column[
+[Kernel#binding](https://ruby-doc.org/core-2.5.1/Kernel.html#method-i-binding): <small>(a module included in Object)</small>
+> *Returns a Binding object, describing the variable and method*
+> *bindings at the point of call. This object can be used when*
+> *calling **eval** to execute the evaluated command in this environment.*
+]
+--
+.right-column[
+`binding.pry` == A REPL where statements are evaluated within this environment
+- A simple statement to give you a lot of power!
+]
+
+---
+
+.left-column[
+## Context
+### - cd
+]
+.right-column[
+Move to a different context
+* `cd Object`
+
+Uses a UNIX shell style syntax for navigation
+* `..` - up one nested context
+* `/` - back to main
+]
+
+---
+
+.left-column[
+## Context
+### - cd
+### - nesting
+]
+.right-column[
+Display the current status of nested contexts
+```Ruby
+[1] pry(main)> cd "foobar"
+[2] pry("foobar"):1> cd split('')
+[3] pry(#<Array>):2> length
+=> 6
+[4] pry(#<Array>):2> nesting
+Nesting status:
+--
+0. main (Pry top level)
+1. "foobar"
+2. #<Array>
+[5] pry(#<Array>):2> cd /
+[6] pry(main)>
+```
+]
+
+---
+
+class: middle, center
+
+# It's a Debugger too!
+
+---
+
+.left-column[
+## Debugging
+]
+.right-column[
+By installing the `pry-byebug` gem, we're able to walk through our code
+line by line and set breakpoints. (i.e. a Pry REPL becomes a debugger!)
+]
+
+---
+
+.left-column[
+## Debugging
+### - Breakpoints
+]
+.right-column[
+Breakpoint at line 20 in this file:
+```Ruby
+break 20
+```
+]
+--
+.right-column[
+Break at line 15 in user.rb:
+```Shell
+break app/models/user.rb:15
+```
+]
+--
+.right-column[
+Break at the start of `HomeController#index`
+```Ruby
+break HomeController#index
+```
+]
+--
+.right-column[
+Break only when a condition is true
+```rust
+break Foo#bar if baz?
+```
+]
+
+---
+
+.left-column[
+## Debugging
+### - Breakpoints
+]
+.right-column[
+List, view or delete breakpoints
+```ruby
+break
+break --show 3
+break --delete 3
+break --disable-all
+```
+<small>(Note: `binding.pry` is not a breakpoint)</small>
+]
+
+---
+
+.left-column[
+## Debugging
+### - Breakpoints
+### - Stepping
+]
+.right-column[
+**c**ontinue - resume execution and end this Pry session (until next breakpoint or `binding.pry`)
+]
+--
+.right-column[
+**s**tep - step **into** the method being called
+]
+--
+.right-column[
+**n**ext - step **over** the method being called, to the next line
+]
+--
+.right-column[
+**f**inish - execute until current stack frame returns.
+<small>(i.e. finish this method and go back to where it was called)</small>
+]
+
+---
+
+.left-column[
+## Debugging
+### - Breakpoints
+### - Stepping
+### - Shortcuts
+]
+.right-column[
+Configure shortcuts in your `~/.pryrc` to save typing
+
+```Ruby
+if defined?(PryByebug)
+  Pry.commands.alias_command 'c', 'continue'
+  Pry.commands.alias_command 's', 'step'
+  Pry.commands.alias_command 'n', 'next'
+  Pry.commands.alias_command 'f', 'finish'
+end
+```
+]
+
+---
+
+class: middle, center
+
+# What Happened?
+
+---
+
+.left-column[
+## What Happened?
+### whereami
+]
+.right-column[
+Display surrounding code in your context
+
+- `<example here>`
+
+* Display more lines before / after
+```Ruby
+wereami 20
+```
+]
+
+---
+
+.left-column[
+## What Happened?
+### whereami
+### pry-backtrace
+]
+.right-column[
+Backtrace showing how you got here
+
+`<example here>`
+]
+
+---
+
+.left-column[
+## What Happened?
+### whereami
+### pry-backtrace
+### wtf
+]
+.right-column[
+Shows a few lines of the backtrace of the most recent exception 
+
+<small>(also available as `_ex_.backtrace`)</small>
+
+]
+
+---
+
+.left-column[
+## What Happened?
+### whereami
+### pry-backtrace
+### wtf
+### wtf?!!!?!?
+]
+.right-column[
+Add question marks and exclamation points to see more lines
+]
+
+---
+
+class: middle, center
+
+# 🕵️‍♀️ Inspecting Code
+
+---
+
+.left-column[
+## Inspection
+### - watch
+]
+.right-column[
+Adds an expression to the watchlist. Watchlist expressions are re-evaluated every time
+you hit `<Enter>` in Pry
+* if the result has changed, the result is output to the console
+]
+--
+.right-column[
+`-l` - list all watches:
+
+`-d <num>` - delete watch at index:
+
+`-d`  - delete all watches:
+
+]
+
+---
+
+.left-column[
+## Inspection
+### - watch
+### - ls
+]
+.right-column[
+`ls <variable|Class>` Lists vars and methods available
+
+* `-l` - local vars
+* `-i` - instance vars
+* `-q` - quiet (scope to this class)
+* `-v` - everything
+* `--grep`(or `-G`) - find
+]
+
+--
+
+.right-column[
+```Ruby
+constants: COMMON_YEAR_DAYS_IN_MONTH  DATE_FORMATS  RFC2822_DAY_NAME  RFC2822_MONTH_NAME
+Object.methods: yaml_tag
+Time.methods:
+  ===  at_with_coercion     current        days_in_year  find_zone!  httpdate  local   now    rfc2822  rfc822    use_zone  xmlschema  zone=         zone_default=
+  at   at_without_coercion  days_in_month  find_zone     gm          iso8601   mktime  parse  rfc3339  strptime  utc       zone       zone_default  zone_offset
+Time#methods:
+  +                    at_beginning_of_hour    beginning_of_day          day                   formatted_offset  hash       midday                  monday?                round                     succ            to_i      utc
+  -                    at_beginning_of_minute  beginning_of_hour         dst?                  friday?           hour       middle_of_day           month                  saturday?                 sunday?         to_r      utc?
+  ...
+```
+```Ruby
+[68] pry(main)> ls Array --grep ^to
+Array#methods: to  to_a  to_ary  to_csv  to_default_s  to_formatted_s  to_h  to_param  to_query  to_s  to_sentence  to_xml
+
+```
+]
+
+---
+
+.left-column[
+## Inspection
+### - watch
+### - ls
+]
+.right-column[
+
+]
+
+
+
+
+
+
+
+
+
+
+---
+
+class: middle, center
+
+# FIN.
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
