@@ -446,12 +446,54 @@ class: middle, center
 ]
 .right-column[
 Display surrounding code in your context
+* Run as soon as you begin a `binding.pry` session
+* displays in an editor (default: vi)
 
-- `<example here>`
+```Ruby
+[1] pry(Abbott::JwtValidator)> whereami
 
-* Display more lines before / after
+From: /Users/brent.haas/workspace/kairos/app/lib/abbott/jwt_validator.rb:8 Abbott::JwtValidator.verify:
+
+     5: def self.verify(token)
+     6:   config = Rails.application.config_for(:abbott)
+     7:   binding.pry
+ =>  8:   JWT.decode(token,
+     9:             nil,
+    10:             true, # Verify the signature of this token
+    11:             algorithm: 'RS256',
+    12:             iss: config["oauth_host"],
+    13:             verify_iss: true, # Verify issuer
+    14:             aud: config["audience"],
+    15:             verify_aud: true, # Verify audience
+    16:   ) do |jwt_header|
+    17:     abbott_jwks_keys = get_jwks_from_abbott(config['jwks_uri'])
+    18:     abbott_signing_key(abbott_jwks_keys, jwt_header['kid'])
+    19:   end
+    20: end
+```
+
+]
+
+---
+
+.left-column[
+## What Happened?
+### whereami
+]
+.right-column[
+* Give a number to display more lines before / after
 ```Ruby
 wereami 20
+```
+
+* Don't display line numbers (for easy copy/paste)
+```Ruby
+wereami -n
+```
+
+* Display the whole file!
+```Ruby
+wereami -f
 ```
 ]
 
@@ -465,7 +507,22 @@ wereami 20
 .right-column[
 Backtrace showing how you got here
 
-`<example here>`
+```Shell
+Backtrace:
+--
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:117:in `block in resume_pry'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:30:in `block (2 levels) in run'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/byebug-11.1.2/lib/byebug/helpers/eval.rb:94:in `allowing_other_threads'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:30:in `block in run'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:29:in `catch'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:29:in `run'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:113:in `resume_pry'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/pry-byebug-3.9.0/lib/byebug/processors/pry_processor.rb:65:in `at_line'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/byebug-11.1.2/lib/byebug/context.rb:98:in `at_line'
+/Users/brent.haas/workspace/kairos/app/lib/abbott/jwt_validator.rb:8:in `verify'
+/Users/brent.haas/workspace/kairos/spec/lib/abbott/jwt_validator_spec.rb:114:in `block (4 levels) in <main>'
+/Users/brent.haas/.rbenv/versions/2.7.1/lib/ruby/gems/2.7.0/gems/timecop-0.9.1/lib/timecop/timecop.rb:201:in `
+```
 ]
 
 ---
@@ -477,7 +534,7 @@ Backtrace showing how you got here
 ### wtf
 ]
 .right-column[
-Shows a few lines of the backtrace of the most recent exception 
+Shows a few lines of the backtrace of the most recent exception
 
 <small>(also available as `_ex_.backtrace`)</small>
 
@@ -494,6 +551,25 @@ Shows a few lines of the backtrace of the most recent exception
 ]
 .right-column[
 Add question marks and exclamation points to see more lines
+]
+
+---
+
+.left-column[
+## What Happened?
+### whereami
+### pry-backtrace
+### wtf
+### wtf?!!!?!?
+### raise-up
+]
+.right-column[
+Raise up, like exit, allows you to quit pry. Instead of returning a value
+however, it raises an exception.
+
+* Useful if you want to see how your current code would hande an exception
+
+* use `raise-up!` to raise past any other Pry instances encountered
 ]
 
 ---
@@ -567,17 +643,84 @@ Array#methods: to  to_a  to_ary  to_csv  to_default_s  to_formatted_s  to_h  to_
 ## Inspection
 ### - watch
 ### - ls
+### - show-source
 ]
 .right-column[
+Easy alias: `$`
+
+Shows the source code of the method given
+
+<small>(Note: you need pry-doc to view gems and core Ruby)</small>
+
+* Helps to indicate where the method is defined (monkeypatching)
+
+* `-a` shows all versions (i.e. any monkeypatches)
+
+* `-super` shows the code for this method in its superclass
 
 ]
 
 
+---
 
+.left-column[
+## Inspection
+### - watch
+### - ls
+### - show-source
+### - show-doc
+]
+.right-column[
+Easy alias: `?`
 
+<small>(Note: you need pry-doc to view gems and core Ruby)</small>
 
+Shows any documentation or comments associated with this method
 
+`show-doc` is being deprecated, instead use `show-source -d`
+* This also means they share the same available options
 
+]
+
+---
+
+.left-column[
+## Inspection
+### - watch
+### - ls
+### - show-source
+### - show-doc
+]
+
+```Ruby
+[1] pry(main)> show-doc String#reverse
+
+From: string.c (C Method):
+Owner: String
+Visibility: public
+Signature: reverse()
+Number of lines: 3
+
+Returns a new string with the characters from str in reverse order.
+
+   "stressed".reverse   #=> "desserts"
+
+WARNING: the show-doc command is deprecated. It will be removed from future Pry versions.
+Please use 'show-source' with the -d (or --doc) switch instead
+Example: show-source String#reverse -d
+```
+
+---
+
+class: middle, center
+
+Learn about Rails
+
+---
+
+* `show-routes --grep`
+* `find-route <controller/namespace>`
+* `show-model`
 
 
 
